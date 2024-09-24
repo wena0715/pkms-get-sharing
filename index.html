@@ -50,7 +50,7 @@
 
     // CSVファイルの読み込み
     async function loadCharacterDefaults() {
-      const response = await fetch('/res/chara/list.csv');
+      const response = await fetch('res/chara/list.csv');
       const csvData = await response.text();
       const rows = csvData.split('\n');
       rows.forEach((row, index) => {

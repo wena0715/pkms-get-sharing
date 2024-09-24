@@ -67,7 +67,10 @@
         const id = index; // CSVファイルの行番号をIDとして扱う
         const name = cols[1].trim(); // キャラクター名
         const defaultRarity = parseInt(cols[2].trim()); // レア度（星）
-        const exRole = cols[5].trim() || '未所持'; // EXロール
+        // EXロールはデフォルトであれば必ずFalse
+        const exRole = 0;
+        // todo: exロールタイプの画像とかちゃんと用意したい
+        const exRoleType = cols[5].trim() || '未所持'; // EXロール
         characterDefaults[id] = { name: name, rarity: defaultRarity, exRole: exRole };
       });
 
@@ -81,7 +84,7 @@
 
       Object.keys(characterDefaults).forEach(characterId => {
         const { name, rarity, exRole } = characterDefaults[characterId];
-        addCharacterForm(characterId, 0, rarity, exRole !== '未所持' ? 1 : 0); // 初期値でフォームを生成
+        addCharacterForm(characterId, 0, rarity, 0); // 初期値でフォームを生成
       });
     }
 

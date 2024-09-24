@@ -28,9 +28,17 @@
   <button id="copy-url-btn" style="display:none;" onclick="copyUrl()">URLをコピー</button>
 
   <script>
+
+//  各パラメータ：
+//  limitbreak：技レベル。0:未入手,1-5は技レベルを表す
+//  rarity:星。主人公でない限り3-5,EXしかないので、0:星3,1:星4,2:星5,3:EX済とする
+//  exRole:EXロール開放済みかどうか。0なら未開放、1なら開放済み
+
     let characterDefaults = {}; // CSVデータを格納する変数
 
     // 48進数用の文字セット（0-9, a-z, A-K）
+    // 技レベルで3ビット、星で2ビット、exロールフラグで1ビットの計6ビットだが、
+    // 最大値は101111(2)で47なので48までの数値を確保
     const base48Chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKL';
 
     // ビットデータを48進数に変換する関数
@@ -42,7 +50,7 @@
     // 48進数の文字をデコードしてビットデータに戻す関数
     function decodeCharacter(characterCode) {
       const bitData = base48Chars.indexOf(characterCode);
-      const limitBreak = (bitData >> 3) & 0b111; // 上位3ビットで限界突破
+      const limitBreak = (bitData >> 3) & 0b111; // 上位3ビットで技レベル
       const rarity = (bitData >> 1) & 0b11;     // 次の2ビットでレア度
       const exRole = bitData & 0b1;             // 最下位1ビットでEXロール
       return { limitBreak, rarity, exRole };
@@ -79,7 +87,7 @@
 
     // キャラクターフォームを1つずつ生成する関数
     function addCharacterForm(characterId, limitBreak, rarity, exRole) {
-      if(rarity == 7) rarity = 3
+      if(rarity >= 7) rarity = rarity - 3
       const defaultRarity = rarity; // デフォルトはレア度3
       const characterName = characterDefaults[characterId] ? characterDefaults[characterId].name : `キャラクター${characterId}`;
 
@@ -87,8 +95,8 @@
         <div class="character-form">
           <h3>${characterName}</h3>
           <div>
-            <label for="limit-break-img-${characterId}">限界突破:</label>
-            <img id="limit-break-img-${characterId}" class="img-clickable" src="res/etc/lv${limitBreak}.png" alt="限界突破" data-limitbreak="${limitBreak}" onclick="cycleLimitBreak(${characterId})">
+            <label for="limit-break-img-${characterId}">技レベル:</label>
+            <img id="limit-break-img-${characterId}" class="img-clickable" src="res/etc/lv${limitBreak}.png" alt="技レベル" data-limitbreak="${limitBreak}" onclick="cycleLimitBreak(${characterId})">
           </div>
           <div>
             <label for="rarity-img-${characterId}">レア度:</label>
@@ -108,12 +116,12 @@
       return rarityImages[rarity - 3];  // 修正: レア度3から始まるためオフセットを使用
     }
 
-    // 限界突破の画像をクリックしたときに限界突破の状態を更新する関数
+    // 技レベルの画像をクリックしたときに技レベルの状態を更新する関数
     function cycleLimitBreak(characterId) {
       const img = document.getElementById(`limit-break-img-${characterId}`);
       let limitBreak = parseInt(img.getAttribute('data-limitbreak'));
 
-      // 限界突破の値を1つ増やす（6まで行ったら0に戻す）
+      // 技レベルの値を1つ増やす（6まで行ったら0に戻す）
       limitBreak = (limitBreak + 1) % 6;
 
       // 画像を差し替える
@@ -128,10 +136,7 @@
 
       // レア度の値を1つ増やす（3: star3.png, 4: star4.png, 5: star5.png, 6: starEX.png）
       rarity = rarity + 1; // レア度が3から6（EX）まで循環
-      if(rarity == 7)
-      {
-        rarity = 3
-      }
+      if(rarity == 7) rarity = 3
 
       // 画像を差し替える
       img.setAttribute('data-rarity', rarity);
@@ -157,13 +162,14 @@
       let encodedCharacters = '';
       Object.keys(characterDefaults).forEach(characterId => {
         const limitBreak = document.getElementById(`limit-break-img-${characterId}`).getAttribute('data-limitbreak');
-        const rarity = document.getElementById(`rarity-img-${characterId}`).getAttribute('data-rarity');
+        const rarity = document.getElementById(`rarity-img-${characterId}`).getAttribute('data-rarity') - 3;
         const exRole = document.getElementById(`ex-role-img-${characterId}`).getAttribute('data-exrole');
         encodedCharacters += encodeCharacter(limitBreak, rarity, exRole);
       });
 
+      const base64encode = btoa(encodedCharacters)
       const baseUrl = window.location.origin + window.location.pathname;
-      const query = `?data=${encodedCharacters}`;
+      const query = `?data=${base64encode}`;
       const fullUrl = baseUrl + query;
       document.getElementById('generated-url').textContent = fullUrl;
 
@@ -176,20 +182,20 @@
       await loadCharacterDefaults(); // CSVデータを読み込み
 
       const params = new URLSearchParams(window.location.search);
-      const data = params.get('data');
 
-      // フォームをリセットしてから表示（既存のデフォルトフォームを消去）
-      const formContainer = document.getElementById('character-forms');
-      formContainer.innerHTML = '';
+      const base64data = params.get('data');
+      const data = (base64data != null) ? atob(base64data) : null
       
+      const formContainer = document.getElementById('character-forms');
+
       // クエリ情報がある場合、フォームに反映
       if (data) {
+      // フォームをリセットしてから表示（既存のデフォルトフォームを消去）
+        formContainer.innerHTML = '';
         data.split('').forEach((characterCode, index) => {
           const { limitBreak, rarity, exRole } = decodeCharacter(characterCode);
-          addCharacterForm(index + 1, limitBreak, rarity + 4, exRole);
+          addCharacterForm(index + 1, limitBreak, rarity + 3, exRole);
         });
-      } else {
-        generateCharacterForms(); // クエリがない場合はデフォルトでフォームを生成
       }
     }
 

@@ -1,0 +1,8 @@
+body { font-family: Arial, sans-serif; padding: 20px; }
+.character { margin-bottom: 20px; }
+label { display: block; margin: 10px 0 5px; }
+input, select { padding: 5px; }
+.img-clickable { cursor: pointer; width: 50px; height: 50px; }
+.character-form { display: flex; align-items: center; margin-bottom: 10px; }
+.character-form h3 { margin-right: 10px; }
+.character-form img { margin-right: 10px; }

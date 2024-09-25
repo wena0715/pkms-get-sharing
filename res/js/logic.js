@@ -34,14 +34,16 @@ async function loadCharacterDefaults() {
   rows.forEach((row, index) => {
     if (index === 0) return; // ヘッダー行をスキップ
     const cols = row.split(',');
-    const id = index; // CSVファイルの行番号をIDとして扱う
+    const id = parseInt(cols[0].trim()); // CSVファイルの行番号をIDとして扱う
     const name = cols[1].trim(); // キャラクター名
     const defaultRarity = parseInt(cols[2].trim()); // レア度（星）
+    const type = cols[3].trim();
+    const role = cols[4].trim();
     // EXロールはデフォルトであれば必ずFalse
     const exRole = 0;
     // todo: exロールタイプの画像とかちゃんと用意したい
     const exRoleType = cols[5].trim() || '未所持'; // EXロール
-    characterDefaults[id] = { name: name, rarity: defaultRarity, exRole: exRole };
+    characterDefaults[id] = { name: name, rarity: defaultRarity, type:type, exRole: exRole };
   });
 
   generateCharacterForms(); // CSVデータの数に基づいてフォームを生成
@@ -60,10 +62,16 @@ function generateCharacterForms() {
 
 // キャラクターフォームを1つずつ生成する関数
 function addCharacterForm(characterId, limitBreak, rarity, exRole) {
+  /*
   if(rarity >= 7) rarity = rarity - 3
   const defaultRarity = rarity; // デフォルトはレア度3
-  const characterName = characterDefaults[characterId] ? characterDefaults[characterId].name : `キャラクター${characterId}`;
+  */
 
+  const characterName = characterDefaults[characterId] ? characterDefaults[characterId].name : `キャラクター${characterId}`;
+  const type = characterDefaults[characterId] ? characterDefaults[characterId].type : 'ノーマル';
+
+  console.log(type)
+  /*
   const newForm = `
     <div class="character-form">
       <h3>${characterName}</h3>
@@ -80,6 +88,13 @@ function addCharacterForm(characterId, limitBreak, rarity, exRole) {
         <img id="ex-role-img-${characterId}" class="img-clickable" src="res/etc/${exRole ? 'EXRoll.png' : 'EXRoll-GS.png'}" alt="EXロール" data-exrole="${exRole}" onclick="cycleExRole(${characterId})">
       </div>
     </div>`;
+  */
+  //todo タイプ名を英語にする
+  const newForm = `
+        <div id="has-character-${characterId}" class="buddy ${limitBreak>0 ? 'active':''} ${type}" onclick="toggleBuddy(this)">
+            ${characterName}
+        </div>
+  `;
   document.getElementById('character-forms').insertAdjacentHTML('beforeend', newForm);
 }
 
@@ -134,9 +149,21 @@ function cycleExRole(characterId) {
 function generateUrl() {
   let encodedCharacters = '';
   Object.keys(characterDefaults).forEach(characterId => {
+    /*
     const limitBreak = document.getElementById(`limit-break-img-${characterId}`).getAttribute('data-limitbreak');
     const rarity = document.getElementById(`rarity-img-${characterId}`).getAttribute('data-rarity') - 3;
     const exRole = document.getElementById(`ex-role-img-${characterId}`).getAttribute('data-exrole');
+    */
+   var limitBreak;
+   if(document.getElementById(`has-character-${characterId}`).classList.contains('active')){
+      limitBreak = 1
+    }
+    else{
+      limitBreak = 0
+    };
+    //todo とりあえず仮置き
+    const rarity = 2;
+    const exRole = 0;
     encodedCharacters += encodeCharacter(limitBreak, rarity, exRole);
   });
 
@@ -184,3 +211,8 @@ function copyUrl() {
 window.onload = function () {
   displayCharacterInfoFromQuery();
 };
+
+// バディーズをトグル（アクティブ/非アクティブを切り替え）
+function toggleBuddy(buddy) {
+  buddy.classList.toggle("active");
+}

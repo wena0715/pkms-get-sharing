@@ -3,22 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>キャラクター所持情報共有</title>
+  <title>バディーズチェッカー</title>
   <link rel="stylesheet" href="res/css/style.css" type="text/css">
+  <script src="res/js/logic.js"></script>
 </head>
 <body>
-  <h1>キャラクター所持情報共有</h1>
 
   <!-- キャラクター情報を表示 -->
-  <div id="character-forms"></div>
-
-  <button type="button" onclick="generateUrl()">URLを生成</button>
-
-  <h2>生成されたURL</h2>
-  <p id="generated-url">まだURLは生成されていません。</p>
-  <button id="copy-url-btn" style="display:none;" onclick="copyUrl()">URLをコピー</button>
-
-  <script src="res/js/logic.js"></script>
+  <div class="container">
+      <div class="header">
+          <div class="title">
+              <span class="title-text">バディーズチェッカー</span>
+          </div>
+      </div>
+      <div id="character-forms" class="list">
+      </div>
+    <!--
+      <div class="search-filter">
+          <input type="text" placeholder="検索" class="search-box">
+          <button class="filter-button">フィルター</button>
+      </div>
+      <div class="view-options">
+          <select class="dropdown">
+              <option>実装日</option>
+          </select>
+      </div>
+    -->
+      <div class="url-generation">
+        <button type="button" onclick="generateUrl()">共有用URL</button>
+        <h2>生成されたURL</h2>
+        <p id="generated-url">まだURLは生成されていません。</p>
+        <button id="copy-url-btn" style="display:none;" onclick="copyUrl()">URLをコピー</button>
+      </div>
+  </div>
 </body>
 </html>
 

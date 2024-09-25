@@ -1,3 +1,4 @@
+/*
 body { font-family: Arial, sans-serif; padding: 20px; }
 .character { margin-bottom: 20px; }
 label { display: block; margin: 10px 0 5px; }
@@ -6,3 +7,176 @@ input, select { padding: 5px; }
 .character-form { display: flex; align-items: center; margin-bottom: 10px; }
 .character-form h3 { margin-right: 10px; }
 .character-form img { margin-right: 10px; }
+*/
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100%;
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    background-color: white;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #2ab6c8;
+    padding: 10px;
+    color: white;
+}
+
+.title {
+    display: flex;
+    align-items: center;
+}
+
+.title-text {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+/* バディーズの初期状態 (薄く表示) */
+.buddy {
+    padding: 20px;
+    border-bottom: 1px solid #ccc;
+    text-align: left;
+    font-size: 18px;
+    color: #333;
+    background-color: #f0f0f0; /* 背景色を少し明るめに */
+    opacity: 0.3; /* 薄く表示 */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* バディーズがアクティブになった時 */
+.buddy.active {
+    opacity: 1; /* 通常の表示 */
+}
+
+.buddy.ノーマル{
+    background-color: #e2e2e2;
+}
+.buddy.ほのお{
+    background-color: #ffc180;
+}
+.buddy.みず{
+    background-color: #7edfff;
+}
+.buddy.でんき{
+    background-color: #ffee1a;
+}
+.buddy.くさ{
+    background-color: #b4dd28;
+}
+.buddy.こおり{
+    background-color: #7affff;
+}
+.buddy.かくとう{
+    background-color: #ff8383;
+}
+.buddy.どく{
+    background-color: #c594e4;
+}
+.buddy.じめん{
+    background-color: #e2c25b;
+}
+.buddy.ひこう{
+    background-color: #7ec1ff;
+}
+.buddy.エスパー{
+    background-color: #ff99ff;
+}
+.buddy.むし{
+    background-color: #6be574;
+}
+.buddy.いわ{
+    background-color: #ffe141;
+}
+.buddy.ゴースト{
+    background-color: #a9a2e8;
+}
+.buddy.ドラゴン{
+    background-color: #ffa273;
+}
+.buddy.あく{
+    background-color: #9cb5ff;
+}
+.buddy.はがね{
+    background-color: #b5bed8;
+}
+.buddy.フェアリー{
+    background-color: #ff91b3;
+}
+
+.search-filter {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+    background-color: #f9f9f9;
+}
+
+.search-box {
+    width: 70%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.filter-button {
+    padding: 10px 20px;
+    background-color: #2ab6c8;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.view-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+
+.dropdown {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}

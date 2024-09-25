@@ -70,7 +70,6 @@ function addCharacterForm(characterId, limitBreak, rarity, exRole) {
   const characterName = characterDefaults[characterId] ? characterDefaults[characterId].name : `キャラクター${characterId}`;
   const type = characterDefaults[characterId] ? characterDefaults[characterId].type : 'ノーマル';
 
-  console.log(type)
   /*
   const newForm = `
     <div class="character-form">
@@ -90,14 +89,17 @@ function addCharacterForm(characterId, limitBreak, rarity, exRole) {
     </div>`;
   */
   //todo タイプ名を英語にする
-  const newForm = `
+  let div = document.createElement('div');
+  div.innerHTML = `
         <div id="has-character-${characterId}" class="buddy ${limitBreak>0 ? 'active':''} ${type}" onclick="toggleBuddy(this)">
             ${characterName}
         </div>
   `;
-  document.getElementById('character-forms').insertAdjacentHTML('beforeend', newForm);
+  div.style.order = characterId;
+  document.getElementById('character-forms').appendChild(div);
 }
 
+/*
 // レア度に応じて適切な画像ファイル名を返す関数
 function getRarityImage(rarity) {
   const rarityImages = ['star3.png', 'star4.png', 'star5.png', 'starEX.png']; // レア度3, 4, 5, EXに対応
@@ -144,6 +146,7 @@ function cycleExRole(characterId) {
   img.setAttribute('data-exrole', exRole);
   img.src = `res/etc/${exRoleImages[exRole]}`;
 }
+*/
 
 // URL生成関数
 function generateUrl() {
@@ -154,7 +157,7 @@ function generateUrl() {
     const rarity = document.getElementById(`rarity-img-${characterId}`).getAttribute('data-rarity') - 3;
     const exRole = document.getElementById(`ex-role-img-${characterId}`).getAttribute('data-exrole');
     */
-   var limitBreak;
+   let limitBreak;
    if(document.getElementById(`has-character-${characterId}`).classList.contains('active')){
       limitBreak = 1
     }
@@ -215,4 +218,15 @@ window.onload = function () {
 // バディーズをトグル（アクティブ/非アクティブを切り替え）
 function toggleBuddy(buddy) {
   buddy.classList.toggle("active");
+}
+
+// 昇順と降順を入れ替える
+function changeOrderAsc(button) {
+  let characters = Array.from(document.getElementById('character-forms').children);
+  
+  let count = characters.length;
+  characters.forEach(character => {
+    character.style.order = count - character.style.order;
+  })
+  if (button.textContent == "昇順"){button.textContent = "降順"}else{button.textContent = "昇順"}
 }

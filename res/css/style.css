@@ -83,6 +83,7 @@ body {
 /* バディーズがアクティブになった時 */
 .buddy.active {
     opacity: 1; /* 通常の表示 */
+    font-weight:bold;
 }
 
 .buddy.ノーマル{

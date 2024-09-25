@@ -28,10 +28,9 @@
           </select>
       </div>
       <div class="url-generation">
-        <button type="button" onclick="generateUrl()">共有用URL</button>
-        <h2>生成されたURL</h2>
-        <p id="generated-url">まだURLは生成されていません。</p>
-        <button id="copy-url-btn" style="display:none;" onclick="copyUrl()">URLをコピー</button>
+        <button type="button" class="url-button" onclick="generateUrl()">URLで共有する</button>
+        <p id="generated-url"></p>
+        <button id="copy-url-btn" class="url-copy-button" onclick="copyUrl()">URLをコピー</button>
       </div>
   </div>
 </body>

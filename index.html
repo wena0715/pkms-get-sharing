@@ -19,14 +19,15 @@
       <div id="character-forms" class="list">
       </div>
       <div class="search-filter">
-          <input type="text" placeholder="検索" class="search-box">
+        <div class="view-options">
+            <select class="dropdown">
+                <option>実装日</option>
+            </select>
+            <button id="order-button" onclick="changeOrderAsc(this)">昇順</button>
+        </div>
+        <div class="view-options">
           <button class="filter-button" onclick="openFilterWindow()">フィルター</button>
-      </div>
-      <div class="view-options">
-          <select class="dropdown">
-              <option>実装日</option>
-          </select>
-          <button id="order-button" onclick="changeOrderAsc(this)">昇順</button>
+        </div>
       </div>
       <div class="url-generation">
         <button type="button" class="url-button" onclick="generateUrl()">URLで共有する</button>

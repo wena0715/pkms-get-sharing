@@ -476,13 +476,10 @@ function applyFilters(){
     if(document.getElementById(`type-${type}`).classList.contains('active')){filter_type.push(list_type[type])}
   });
 
-  console.log(filter_role);
-  console.log(filter_type);
   //有効になっているロールフィルターが0ではない場合、ロールをフィルタリングする
   if (filter_role.length != 0){
     Object.keys(characterDefaults).forEach(characterId => {
       buddy = document.getElementById(`has-character-${characterId}`);
-      console.log(characterDefaults[characterId]["role"]);
       if (filter_role.includes(characterDefaults[characterId]["role"])){
         buddy.style.display = "flex";
       }

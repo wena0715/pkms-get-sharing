@@ -6,6 +6,13 @@
 
 let characterDefaults = {}; // CSVデータを格納する変数
 
+const list_role={"attack":"アタッカー","technical":"テクニカル","support":"サポート","speed":"スピード","field":"フィールド","multi":"マルチ"};
+const list_type={
+  "normal":"ノーマル","hono":"ほのお","mizu":"みず","denki":"でんき","kusa":"くさ","kori":"こおり",
+  "kakutou":"かくとう","doku":"どく","jimen":"じめん","hikou":"ひこう","esper":"エスパー","musi":"むし",
+  "iwa":"いわ","ghost":"ゴースト","dragon":"ドラゴン","aku":"あく","hagane":"はがね","fairy":"フェアリー"
+};
+
 // 48進数用の文字セット（0-9, a-z, A-K）
 // 技レベルで3ビット、星で2ビット、exロールフラグで1ビットの計6ビットだが、
 // 最大値は101111(2)で47なので48までの数値を確保
@@ -43,7 +50,7 @@ async function loadCharacterDefaults() {
     const exRole = 0;
     // todo: exロールタイプの画像とかちゃんと用意したい
     const exRoleType = cols[5].trim() || '未所持'; // EXロール
-    characterDefaults[id] = { name: name, rarity: defaultRarity, type:type, exRole: exRole };
+    characterDefaults[id] = { name: name, rarity: defaultRarity, type:type, role: role, exRole: exRole };
   });
 
   generateCharacterForms(); // CSVデータの数に基づいてフォームを生成
@@ -445,16 +452,57 @@ function huffmanDecode(encodedStr, huffmanCodes) {
 
 // フィルターをリセットする
 function resetFilter(){
-  list_role={"attack":"アタッカー","technical":"テクニカル","support":"サポート","speed":"スピード","field":"フィールド","multi":"マルチ"};
-  list_type={
-    "normal":"ノーマル","hono":"ほのお","mizu":"みず","denki":"でんき","kusa":"くさ","kori":"こおり",
-    "kakutou":"かくとう","doku":"どく","jimen":"じめん","hikou":"ひこう","esper":"エスパー","musi":"むし",
-    "iwa":"いわ","ghost":"ゴースト","dragon":"ドラゴン","aku":"あく","hagane":"はがね","fairy":"フェアリー"
-  };
+  //ロールのフィルターをリセット
   Object.keys(list_role).forEach(role =>{
     if(document.getElementById(`role-${role}`).classList.contains('active')){document.getElementById(`role-${role}`).classList.remove('active');}
   });
+  //タイプのフィルターをリセット
   Object.keys(list_type).forEach(type =>{
     if(document.getElementById(`type-${type}`).classList.contains('active')){document.getElementById(`type-${type}`).classList.remove('active');}
   });
+}
+
+// 設定に応じてバディーズをフィルタリングする
+function applyFilters(){
+  let filter_role=[];
+  let filter_type=[];
+
+  //ロールのうちフィルターが有効になっているものを取得
+  Object.keys(list_role).forEach(role =>{
+    if(document.getElementById(`role-${role}`).classList.contains('active')){filter_role.push(list_role[role])}
+  });
+  //タイプのうちフィルターが有効になっているものを取得
+  Object.keys(list_type).forEach(type =>{
+    if(document.getElementById(`type-${type}`).classList.contains('active')){filter_type.push(list_type[type])}
+  });
+
+  console.log(filter_role);
+  console.log(filter_type);
+  //有効になっているロールフィルターが0ではない場合、ロールをフィルタリングする
+  if (filter_role.length != 0){
+    Object.keys(characterDefaults).forEach(characterId => {
+      buddy = document.getElementById(`has-character-${characterId}`);
+      console.log(characterDefaults[characterId]["role"]);
+      if (filter_role.includes(characterDefaults[characterId]["role"])){
+        buddy.style.display = "flex";
+      }
+      else{
+        buddy.style.display = "none";
+      }
+    });
+  }
+  //有効になっているタイプフィルターが0ではない場合、タイプをフィルタリングする
+  if (filter_type.length != 0){
+    Object.keys(characterDefaults).forEach(characterId => {
+      buddy = document.getElementById(`has-character-${characterId}`);
+      if (filter_type.includes(characterDefaults[characterId]["type"])){
+        buddy.style.display = "flex";
+      }
+      else{
+        buddy.style.display = "none";
+      }
+    });
+  }
+  //フィルター画面を閉じる
+  ClosefilterWindow();
 }

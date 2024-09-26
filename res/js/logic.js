@@ -1,6 +1,6 @@
 
 //  各パラメータ：
-//  limitbreak：技レベル。0:未入手,1-5は技レベルを表す
+//  skilllevel：技レベル。0:未入手,1-5は技レベルを表す
 //  rarity:星。主人公でない限り3-5,EXしかないので、0:星3,1:星4,2:星5,3:EX済とする
 //  exRole:EXロール開放済みかどうか。0なら未開放、1なら開放済み
 
@@ -12,18 +12,18 @@ let characterDefaults = {}; // CSVデータを格納する変数
 const base48Chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKL';
 
 // ビットデータを48進数に変換する関数
-function encodeCharacter(limitBreak, rarity, exRole) {
-  const bitData = (parseInt(limitBreak) << 3) | (parseInt(rarity) << 1) | parseInt(exRole);
+function encodeCharacter(skilllevel, rarity, exRole) {
+  const bitData = (parseInt(skilllevel) << 3) | (parseInt(rarity) << 1) | parseInt(exRole);
   return base48Chars[bitData];
 }
 
 // 48進数の文字をデコードしてビットデータに戻す関数
 function decodeCharacter(characterCode) {
   const bitData = base48Chars.indexOf(characterCode);
-  const limitBreak = (bitData >> 3) & 0b111; // 上位3ビットで技レベル
+  const skilllevel = (bitData >> 3) & 0b111; // 上位3ビットで技レベル
   const rarity = (bitData >> 1) & 0b11;     // 次の2ビットでレア度
   const exRole = bitData & 0b1;             // 最下位1ビットでEXロール
-  return { limitBreak, rarity, exRole };
+  return { skilllevel, rarity, exRole };
 }
 
 // CSVファイルの読み込み
@@ -61,7 +61,7 @@ function generateCharacterForms() {
 }
 
 // キャラクターフォームを1つずつ生成する関数
-function addCharacterForm(characterId, limitBreak, rarity, exRole) {
+function addCharacterForm(characterId, skilllevel, rarity, exRole) {
   /*
   if(rarity >= 7) rarity = rarity - 3
   const defaultRarity = rarity; // デフォルトはレア度3
@@ -76,7 +76,7 @@ function addCharacterForm(characterId, limitBreak, rarity, exRole) {
       <h3>${characterName}</h3>
       <div>
         <label for="limit-break-img-${characterId}">技レベル:</label>
-        <img id="limit-break-img-${characterId}" class="img-clickable" src="res/etc/lv${limitBreak}.png" alt="技レベル" data-limitbreak="${limitBreak}" onclick="cycleLimitBreak(${characterId})">
+        <img id="limit-break-img-${characterId}" class="img-clickable" src="res/etc/lv${skilllevel}.png" alt="技レベル" data-skilllevel="${skilllevel}" onclick="cycleskilllevel(${characterId})">
       </div>
       <div>
         <label for="rarity-img-${characterId}">レア度:</label>
@@ -91,7 +91,7 @@ function addCharacterForm(characterId, limitBreak, rarity, exRole) {
   //todo タイプ名を英語にする
   let div = document.createElement('div');
   div.innerHTML = `
-        <div id="has-character-${characterId}" class="buddy ${limitBreak>0 ? 'active':''} ${type}" onclick="toggleBuddy(this)">
+        <div id="has-character-${characterId}" class="buddy ${skilllevel>0 ? 'active':''} ${type}" onclick="toggleBuddy(this)">
             ${characterName}
         </div>
   `;
@@ -107,16 +107,16 @@ function getRarityImage(rarity) {
 }
 
 // 技レベルの画像をクリックしたときに技レベルの状態を更新する関数
-function cycleLimitBreak(characterId) {
+function cycleskilllevel(characterId) {
   const img = document.getElementById(`limit-break-img-${characterId}`);
-  let limitBreak = parseInt(img.getAttribute('data-limitbreak'));
+  let skilllevel = parseInt(img.getAttribute('data-skilllevel'));
 
   // 技レベルの値を1つ増やす（6まで行ったら0に戻す）
-  limitBreak = (limitBreak + 1) % 6;
+  skilllevel = (skilllevel + 1) % 6;
 
   // 画像を差し替える
-  img.setAttribute('data-limitbreak', limitBreak);
-  img.src = `res/etc/lv${limitBreak}.png`;
+  img.setAttribute('data-skilllevel', skilllevel);
+  img.src = `res/etc/lv${skilllevel}.png`;
 }
 
 // レア度の画像をクリックしたときにレア度の状態を更新する関数
@@ -153,21 +153,21 @@ function generateUrl() {
   let encodedCharacters = '';
   Object.keys(characterDefaults).forEach(characterId => {
     /*
-    const limitBreak = document.getElementById(`limit-break-img-${characterId}`).getAttribute('data-limitbreak');
+    const skilllevel = document.getElementById(`limit-break-img-${characterId}`).getAttribute('data-skilllevel');
     const rarity = document.getElementById(`rarity-img-${characterId}`).getAttribute('data-rarity') - 3;
     const exRole = document.getElementById(`ex-role-img-${characterId}`).getAttribute('data-exrole');
     */
-   let limitBreak;
+   let skilllevel;
    if(document.getElementById(`has-character-${characterId}`).classList.contains('active')){
-      limitBreak = 1
+      skilllevel = 1
     }
     else{
-      limitBreak = 0
+      skilllevel = 0
     };
     //todo とりあえず仮置き
     const rarity = 2;
     const exRole = 0;
-    encodedCharacters += encodeCharacter(limitBreak, rarity, exRole);
+    encodedCharacters += encodeCharacter(skilllevel, rarity, exRole);
   });
   //const base64encode = btoa(encodedCharacters)
   const EncodedStr = huffmanEncodeWithTree(encodedCharacters)
@@ -198,8 +198,8 @@ async function displayCharacterInfoFromQuery() {
   // フォームをリセットしてから表示（既存のデフォルトフォームを消去）
     formContainer.innerHTML = '';
     data.split('').forEach((characterCode, index) => {
-      const { limitBreak, rarity, exRole } = decodeCharacter(characterCode);
-      addCharacterForm(index + 1, limitBreak, rarity + 3, exRole);
+      const { skilllevel, rarity, exRole } = decodeCharacter(characterCode);
+      addCharacterForm(index + 1, skilllevel, rarity + 3, exRole);
     });
   }
 }

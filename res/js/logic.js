@@ -442,3 +442,19 @@ function huffmanDecode(encodedStr, huffmanCodes) {
 
   return decodedStr;
 }
+
+// フィルターをリセットする
+function resetFilter(){
+  list_role={"attack":"アタッカー","technical":"テクニカル","support":"サポート","speed":"スピード","field":"フィールド","multi":"マルチ"};
+  list_type={
+    "normal":"ノーマル","hono":"ほのお","mizu":"みず","denki":"でんき","kusa":"くさ","kori":"こおり",
+    "kakutou":"かくとう","doku":"どく","jimen":"じめん","hikou":"ひこう","esper":"エスパー","musi":"むし",
+    "iwa":"いわ","ghost":"ゴースト","dragon":"ドラゴン","aku":"あく","hagane":"はがね","fairy":"フェアリー"
+  };
+  Object.keys(list_role).forEach(role =>{
+    if(document.getElementById(`role-${role}`).classList.contains('active')){document.getElementById(`role-${role}`).classList.remove('active');}
+  });
+  Object.keys(list_type).forEach(type =>{
+    if(document.getElementById(`type-${type}`).classList.contains('active')){document.getElementById(`type-${type}`).classList.remove('active');}
+  });
+}

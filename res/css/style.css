@@ -1,14 +1,3 @@
-/*
-body { font-family: Arial, sans-serif; padding: 20px; }
-.character { margin-bottom: 20px; }
-label { display: block; margin: 10px 0 5px; }
-input, select { padding: 5px; }
-.img-clickable { cursor: pointer; width: 50px; height: 50px; }
-.character-form { display: flex; align-items: center; margin-bottom: 10px; }
-.character-form h3 { margin-right: 10px; }
-.character-form img { margin-right: 10px; }
-*/
-
 * {
     box-sizing: border-box;
     margin: 0;
@@ -29,6 +18,16 @@ body {
     height: 100%;
 }
 
+button {
+    padding: 10px 20px;
+    background-color: #2ab6c8;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
 .container {
     width: 100%;
     height: 100%;
@@ -159,16 +158,6 @@ body {
     font-size: 16px;
 }
 
-button {
-    padding: 10px 20px;
-    background-color: #2ab6c8;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
 .view-options {
     /*display: flex;*/
     justify-content: space-between;
@@ -192,4 +181,81 @@ button {
 
 .url-copy-button {
     display: none;
+}
+
+.filter-window{
+    display:none;
+}
+.filter-background {
+	/* 画面全体を暗くする透過背景 */
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,.5);
+	top: 0;
+	left: 0;
+	z-index: 10000;
+}
+.filter-popup-content {
+	/* ポップアップ本体 */
+	display: inline-block;
+	position: fixed;
+	width: 75%;
+	z-index: 11000;
+	background: #fff;
+	padding: 2%;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	overflow-y: scroll;
+}
+
+.filter-container {
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    background-color: white;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.header-details{
+    background: #9FC2C7;
+    border-radius: 10px;
+    padding: .25rem;
+    text-align: center;
+    line-height: 1;
+    color: #feffff;
+}
+
+.filter-details{
+    display: flex;
+    gap: 5px;
+    justify-content:space-around;
+}
+
+.filter-item{
+    background-color:#ccc;
+    opacity:0.5;
+    padding: 5px 5px;
+    width:15%;
+    height: 30px;
+}
+
+.img-filter-item{
+    width:100%;
+    height:100%;
+    object-fit: contain;
+}
+
+.filter-item.active{
+    background-color: #2AC78B;
+    opacity:1;
+}
+
+.filter-search{
+    display: flex;
+    justify-content: space-around;
 }

@@ -476,14 +476,16 @@ function applyFilters(){
     if(document.getElementById(`type-${type}`).classList.contains('active')){filter_type.push(list_type[type])}
   });
 
+  //一度すべて有効にする
+    Object.keys(characterDefaults).forEach(characterId => {
+      document.getElementById(`has-character-${characterId}`).style.display = "flex";
+    });
+
   //有効になっているロールフィルターが0ではない場合、ロールをフィルタリングする
   if (filter_role.length != 0){
     Object.keys(characterDefaults).forEach(characterId => {
       buddy = document.getElementById(`has-character-${characterId}`);
-      if (filter_role.includes(characterDefaults[characterId]["role"])){
-        buddy.style.display = "flex";
-      }
-      else{
+      if (!filter_role.includes(characterDefaults[characterId]["role"])){
         buddy.style.display = "none";
       }
     });
@@ -492,10 +494,7 @@ function applyFilters(){
   if (filter_type.length != 0){
     Object.keys(characterDefaults).forEach(characterId => {
       buddy = document.getElementById(`has-character-${characterId}`);
-      if (filter_type.includes(characterDefaults[characterId]["type"])){
-        buddy.style.display = "flex";
-      }
-      else{
+      if (!filter_type.includes(characterDefaults[characterId]["type"])){
         buddy.style.display = "none";
       }
     });

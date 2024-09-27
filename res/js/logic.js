@@ -69,33 +69,10 @@ function generateCharacterForms() {
 
 // キャラクターフォームを1つずつ生成する関数
 function addCharacterForm(characterId, skilllevel, rarity, exRole) {
-  /*
-  if(rarity >= 7) rarity = rarity - 3
-  const defaultRarity = rarity; // デフォルトはレア度3
-  */
 
   const characterName = characterDefaults[characterId] ? characterDefaults[characterId].name : `キャラクター${characterId}`;
   const type = characterDefaults[characterId] ? characterDefaults[characterId].type : 'ノーマル';
 
-  /*
-  const newForm = `
-    <div class="character-form">
-      <h3>${characterName}</h3>
-      <div>
-        <label for="limit-break-img-${characterId}">技レベル:</label>
-        <img id="limit-break-img-${characterId}" class="img-clickable" src="res/etc/lv${skilllevel}.png" alt="技レベル" data-skilllevel="${skilllevel}" onclick="cycleskilllevel(${characterId})">
-      </div>
-      <div>
-        <label for="rarity-img-${characterId}">レア度:</label>
-        <img id="rarity-img-${characterId}" class="img-clickable" src="res/etc/${getRarityImage(defaultRarity)}" alt="レア度" data-rarity="${defaultRarity}" onclick="cycleRarity(${characterId})">
-      </div>
-      <div>
-        <label for="ex-role-img-${characterId}">EXロール:</label>
-        <img id="ex-role-img-${characterId}" class="img-clickable" src="res/etc/${exRole ? 'EXRoll.png' : 'EXRoll-GS.png'}" alt="EXロール" data-exrole="${exRole}" onclick="cycleExRole(${characterId})">
-      </div>
-    </div>`;
-  */
-  //todo タイプ名を英語にする
   let div = document.createElement('div');
   div.innerHTML = `
         <div id="has-character-${characterId}" class="buddy ${skilllevel>0 ? 'active':''} ${type}" onclick="toggleBuddy(this)">
@@ -106,64 +83,10 @@ function addCharacterForm(characterId, skilllevel, rarity, exRole) {
   document.getElementById('character-forms').appendChild(div);
 }
 
-/*
-// レア度に応じて適切な画像ファイル名を返す関数
-function getRarityImage(rarity) {
-  const rarityImages = ['star3.png', 'star4.png', 'star5.png', 'starEX.png']; // レア度3, 4, 5, EXに対応
-  return rarityImages[rarity - 3];  // 修正: レア度3から始まるためオフセットを使用
-}
-
-// 技レベルの画像をクリックしたときに技レベルの状態を更新する関数
-function cycleskilllevel(characterId) {
-  const img = document.getElementById(`limit-break-img-${characterId}`);
-  let skilllevel = parseInt(img.getAttribute('data-skilllevel'));
-
-  // 技レベルの値を1つ増やす（6まで行ったら0に戻す）
-  skilllevel = (skilllevel + 1) % 6;
-
-  // 画像を差し替える
-  img.setAttribute('data-skilllevel', skilllevel);
-  img.src = `res/etc/lv${skilllevel}.png`;
-}
-
-// レア度の画像をクリックしたときにレア度の状態を更新する関数
-function cycleRarity(characterId) {
-  const img = document.getElementById(`rarity-img-${characterId}`);
-  let rarity = parseInt(img.getAttribute('data-rarity'));
-
-  // レア度の値を1つ増やす（3: star3.png, 4: star4.png, 5: star5.png, 6: starEX.png）
-  rarity = rarity + 1; // レア度が3から6（EX）まで循環
-  if(rarity == 7) rarity = 3
-
-  // 画像を差し替える
-  img.setAttribute('data-rarity', rarity);
-  img.src = `res/etc/${getRarityImage(rarity)}`;
-}
-
-// EXロールの画像をクリックしたときにEXロールの状態を更新する関数
-function cycleExRole(characterId) {
-  const img = document.getElementById(`ex-role-img-${characterId}`);
-  let exRole = parseInt(img.getAttribute('data-exrole'));
-
-  // EXロールを0と1で切り替える
-  exRole = (exRole + 1) % 2;
-
-  // EXロール画像の配列
-  const exRoleImages = ['EXRoll-GS.png', 'EXRoll.png']; // ここで画像が切り替わる
-  img.setAttribute('data-exrole', exRole);
-  img.src = `res/etc/${exRoleImages[exRole]}`;
-}
-*/
-
 // URL生成関数
 function generateUrl() {
   let encodedCharacters = '';
   Object.keys(characterDefaults).forEach(characterId => {
-    /*
-    const skilllevel = document.getElementById(`limit-break-img-${characterId}`).getAttribute('data-skilllevel');
-    const rarity = document.getElementById(`rarity-img-${characterId}`).getAttribute('data-rarity') - 3;
-    const exRole = document.getElementById(`ex-role-img-${characterId}`).getAttribute('data-exrole');
-    */
    let skilllevel;
    if(document.getElementById(`has-character-${characterId}`).classList.contains('active')){
       skilllevel = 1
@@ -176,7 +99,6 @@ function generateUrl() {
     const exRole = 0;
     encodedCharacters += encodeCharacter(skilllevel, rarity, exRole);
   });
-  //const base64encode = btoa(encodedCharacters)
   const EncodedStr = huffmanEncodeWithTree(encodedCharacters)
   const baseUrl = window.location.origin + window.location.pathname;
   const query = `?data=${EncodedStr}`;
@@ -193,8 +115,6 @@ async function displayCharacterInfoFromQuery() {
 
   const params = new URLSearchParams(window.location.search);
 
-  //const base64data = params.get('data');
-  //const data = (base64data != null) ? atob(base64data) : null
   const huffmanData = params.get('data');
   const data = (huffmanData != null) ? huffmanDecodeWithTree(huffmanData) : null
 
@@ -223,282 +143,3 @@ function copyUrl() {
 window.onload = function () {
   displayCharacterInfoFromQuery();
 };
-
-// バディーズをトグル（アクティブ/非アクティブを切り替え）
-function toggleBuddy(buddy) {
-  buddy.classList.toggle("active");
-}
-
-// 昇順と降順を入れ替える
-function changeOrderAsc(button) {
-  let characters = Array.from(document.getElementById('character-forms').children);
-  let count = characters.length;
-  characters.forEach(character => {
-    character.style.order = count - character.style.order;
-  })
-  if (button.textContent == "昇順"){button.textContent = "降順"}else{button.textContent = "昇順"}
-}
-
-// フィルター画面を開く
-function openFilterWindow(){
-  document.getElementById("filter-window").style.display = "flex";
-}
-
-// フィルター画面を閉じる
-function ClosefilterWindow(){
-  document.getElementById("filter-window").style.display = "none";
-}
-
-// フィルターをトグル（アクティブ/非アクティブを切り替え）
-function toggleFilter(filterButton) {
-  filterButton.classList.toggle("active");
-}
-
-class HuffmanNode {
-  constructor(char, freq, left = null, right = null) {
-    this.char = char;
-    this.freq = freq;
-    this.left = left;
-    this.right = right;
-  }
-}
-
-// 文字列から頻度表を作成
-function buildFrequencyTable(str) {
-  const freqMap = {};
-  for (const char of str) {
-    if (char in freqMap) {
-      freqMap[char]++;
-    } else {
-      freqMap[char] = 1;
-    }
-  }
-  return freqMap;
-}
-
-// 優先度付きキュー（配列）を使ってハフマン木を構築
-function buildHuffmanTree(freqMap) {
-  const nodes = [];
-  for (const char in freqMap) {
-    nodes.push(new HuffmanNode(char, freqMap[char]));
-  }
-
-  while (nodes.length > 1) {
-    // 頻度の昇順でソート
-    nodes.sort((a, b) => a.freq - b.freq);
-
-    const left = nodes.shift();
-    const right = nodes.shift();
-
-    // 新しい内部ノードを作成して追加
-    const newNode = new HuffmanNode(null, left.freq + right.freq, left, right);
-    nodes.push(newNode);
-  }
-
-  return nodes[0];
-}
-
-// 各文字のビット列をマッピング
-function buildHuffmanCodes(node, prefix = '', codeMap = {}) {
-  if (node.char !== null) {
-    codeMap[node.char] = prefix;
-  } else {
-    buildHuffmanCodes(node.left, prefix + '0', codeMap);
-    buildHuffmanCodes(node.right, prefix + '1', codeMap);
-  }
-  return codeMap;
-}
-
-// ハフマンツリーをシリアライズ（ビット列化）
-function serializeTree(node) {
-  if (node.char !== null) {
-    return `1${node.char.charCodeAt(0).toString(2).padStart(8, '0')}`; // 1 + 文字のバイナリ
-  } else {
-    return `0${serializeTree(node.left)}${serializeTree(node.right)}`; // 0 + 左右の子を再帰的にシリアライズ
-  }
-}
-
-// シリアライズされたハフマンツリーをデシリアライズ（ツリーに復元）
-function deserializeTree(serializedTree) {
-  let index = 0;
-
-  function deserialize() {
-    if (serializedTree[index] === '1') {
-      index++;
-      const charCode = parseInt(serializedTree.slice(index, index + 8), 2);
-      index += 8;
-      return new HuffmanNode(String.fromCharCode(charCode), 0);
-    } else {
-      index++;
-      const left = deserialize();
-      const right = deserialize();
-      return new HuffmanNode(null, 0, left, right);
-    }
-  }
-
-  return deserialize();
-}
-
-// 64進数変換用の文字セット
-const base64Characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-
-// ビット列を64進に変換
-function toBase64(bitString) {
-  let result = '';
-  for (let i = 0; i < bitString.length; i += 6) {
-    const segment = bitString.slice(i, i + 6).padEnd(6, '0');
-    const index = parseInt(segment, 2);
-    result += base64Characters[index];
-  }
-  return result;
-}
-
-// 64進をビット列に変換
-function fromBase64(base64String) {
-  let bitString = '';
-  for (const char of base64String) {
-    const index = base64Characters.indexOf(char);
-    bitString += index.toString(2).padStart(6, '0');
-  }
-  return bitString;
-}
-
-// ビット列の長さを固定サイズで表現する
-function intToFixedLengthBinary(num, length = 32) {
-  return num.toString(2).padStart(length, '0'); // デフォルト32ビット（4バイト）
-}
-
-function fixedLengthBinaryToInt(binaryStr) {
-  return parseInt(binaryStr, 2);
-}
-
-// エンコード（ツリーも含む）
-function huffmanEncodeWithTree(str) {
-  const freqMap = buildFrequencyTable(str);
-  const huffmanTree = buildHuffmanTree(freqMap);
-  const huffmanCodes = buildHuffmanCodes(huffmanTree);
-  const encodedStr = str.split('').map(char => huffmanCodes[char]).join('');
-  const serializedTree = serializeTree(huffmanTree);
-  
-  const fullEncodedStr = serializedTree + encodedStr;
-  const originalBitLength = fullEncodedStr.length;
-
-  // ビット列の長さを32ビットの固定長バイナリにして追加
-  const lengthBinary = intToFixedLengthBinary(originalBitLength);
-  const fullEncodedStrWithLength = lengthBinary + fullEncodedStr;
-
-  const base64Encoded = toBase64(fullEncodedStrWithLength);
-  
-  return base64Encoded;
-}
-
-// 復号（ツリーも含む）
-function huffmanDecodeWithTree(base64Encoded) {
-  const fullEncodedStrWithLength = fromBase64(base64Encoded);
-
-  // 先頭の32ビットを長さとして取得
-  const lengthBinary = fullEncodedStrWithLength.slice(0, 32);
-  const originalBitLength = fixedLengthBinaryToInt(lengthBinary);
-
-  // 残りのビット列を取り出す
-  const fullEncodedStr = fullEncodedStrWithLength.slice(32, 32 + originalBitLength);
-
-  const [serializedTree, encodedStr] = splitTreeAndData(fullEncodedStr);
-  const huffmanTree = deserializeTree(serializedTree);
-  const decodedStr = huffmanDecode(encodedStr, buildHuffmanCodes(huffmanTree));
-  return decodedStr;
-}
-
-// ツリーとエンコードされた文字列を分離
-function splitTreeAndData(fullEncodedStr) {
-  let index = 0;
-  
-  function readTree() {
-    if (fullEncodedStr[index] === '1') {
-      index += 9; // 1 + 8ビット（文字のバイナリ）
-    } else {
-      index++;
-      readTree(); // 左の子を読む
-      readTree(); // 右の子を読む
-    }
-  }
-
-  readTree(); // ツリー全体を読み込む
-  const serializedTree = fullEncodedStr.slice(0, index);
-  const encodedStr = fullEncodedStr.slice(index);
-  return [serializedTree, encodedStr];
-}
-
-// 復号に使うビット列とハフマンツリーから、復号する
-function huffmanDecode(encodedStr, huffmanCodes) {
-  let decodedStr = '';
-  let temp = '';
-
-  const reversedCodes = Object.entries(huffmanCodes).reduce((acc, [char, code]) => {
-    acc[code] = char;
-    return acc;
-  }, {});
-
-  for (const bit of encodedStr) {
-    temp += bit;
-    if (temp in reversedCodes) {
-      decodedStr += reversedCodes[temp];
-      temp = '';
-    }
-  }
-
-  return decodedStr;
-}
-
-// フィルターをリセットする
-function resetFilter(){
-  //ロールのフィルターをリセット
-  Object.keys(list_role).forEach(role =>{
-    if(document.getElementById(`role-${role}`).classList.contains('active')){document.getElementById(`role-${role}`).classList.remove('active');}
-  });
-  //タイプのフィルターをリセット
-  Object.keys(list_type).forEach(type =>{
-    if(document.getElementById(`type-${type}`).classList.contains('active')){document.getElementById(`type-${type}`).classList.remove('active');}
-  });
-}
-
-// 設定に応じてバディーズをフィルタリングする
-function applyFilters(){
-  let filter_role=[];
-  let filter_type=[];
-
-  //ロールのうちフィルターが有効になっているものを取得
-  Object.keys(list_role).forEach(role =>{
-    if(document.getElementById(`role-${role}`).classList.contains('active')){filter_role.push(list_role[role])}
-  });
-  //タイプのうちフィルターが有効になっているものを取得
-  Object.keys(list_type).forEach(type =>{
-    if(document.getElementById(`type-${type}`).classList.contains('active')){filter_type.push(list_type[type])}
-  });
-
-  //一度すべて有効にする
-    Object.keys(characterDefaults).forEach(characterId => {
-      document.getElementById(`has-character-${characterId}`).style.display = "flex";
-    });
-
-  //有効になっているロールフィルターが0ではない場合、ロールをフィルタリングする
-  if (filter_role.length != 0){
-    Object.keys(characterDefaults).forEach(characterId => {
-      buddy = document.getElementById(`has-character-${characterId}`);
-      if (!filter_role.includes(characterDefaults[characterId]["role"])){
-        buddy.style.display = "none";
-      }
-    });
-  }
-  //有効になっているタイプフィルターが0ではない場合、タイプをフィルタリングする
-  if (filter_type.length != 0){
-    Object.keys(characterDefaults).forEach(characterId => {
-      buddy = document.getElementById(`has-character-${characterId}`);
-      if (!filter_type.includes(characterDefaults[characterId]["type"])){
-        buddy.style.display = "none";
-      }
-    });
-  }
-  //フィルター画面を閉じる
-  ClosefilterWindow();
-}

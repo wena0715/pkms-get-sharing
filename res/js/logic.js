@@ -6,11 +6,11 @@
 
 let characterDefaults = {}; // CSVデータを格納する変数
 
-const list_role={"attack":"アタッカー","technical":"テクニカル","support":"サポート","speed":"スピード","field":"フィールド","multi":"マルチ"};
+const list_role={"アタッカー":"attack","テクニカル":"technical","サポート":"support","スピード":"speed","フィールド":"field","マルチ":"multi"};
 const list_type={
-  "normal":"ノーマル","hono":"ほのお","mizu":"みず","denki":"でんき","kusa":"くさ","kori":"こおり",
-  "kakutou":"かくとう","doku":"どく","jimen":"じめん","hikou":"ひこう","esper":"エスパー","musi":"むし",
-  "iwa":"いわ","ghost":"ゴースト","dragon":"ドラゴン","aku":"あく","hagane":"はがね","fairy":"フェアリー"
+  "ノーマル":"normal","ほのお":"hono","みず":"mizu","でんき":"denki","くさ":"kusa","こおり":"kori",
+  "かくとう":"kakutou","どく":"doku","じめん":"jimen","ひこう":"hikou","エスパー":"esper","むし":"musi",
+  "いわ":"iwa","ゴースト":"ghost","ドラゴン":"dragon","あく":"aku","はがね":"hagane","フェアリー":"fairy"
 };
 
 // 48進数用の文字セット（0-9, a-z, A-K）
@@ -69,11 +69,20 @@ function addCharacterForm(characterId, skilllevel, rarity, exRole) {
 
   const characterName = characterDefaults[characterId] ? characterDefaults[characterId].name : `キャラクター${characterId}`;
   const type = characterDefaults[characterId] ? characterDefaults[characterId].type : 'ノーマル';
+  const role = characterDefaults[characterId] ? characterDefaults[characterId].role : 'アタッカー';
+  const exrole = characterDefaults[characterId] ? characterDefaults[characterId].exRole : '';
 
   let div = document.createElement('div');
   div.innerHTML = `
         <div id="has-character-${characterId}" class="buddy ${skilllevel>0 ? 'active':''} ${type}" onclick="toggleBuddy(this)">
-            ${characterName}
+          <div class="character-name">
+            <div><img class="role" src="res/etc/role/${list_role[role]}.png"></div>
+            <div>${characterName}</div>
+          </div>
+          <div>
+            <button class="skill-level" onclick="toggleSkillLevel(event,this)">技レベル</button>
+            <button class="ex-role" onclick="toggleExRole(event,this)">EXロール<img class="role" src="res/etc/role/${list_role[exrole]}_cake.png"></button>
+          </div>
         </div>
   `;
   div.style.order = characterId;

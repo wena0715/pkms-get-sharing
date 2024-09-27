@@ -46,10 +46,7 @@ async function loadCharacterDefaults() {
     const defaultRarity = parseInt(cols[2].trim()); // レア度（星）
     const type = cols[3].trim();
     const role = cols[4].trim();
-    // EXロールはデフォルトであれば必ずFalse
-    const exRole = 0;
-    // todo: exロールタイプの画像とかちゃんと用意したい
-    const exRoleType = cols[5].trim() || '未所持'; // EXロール
+    const exRole = cols[5].trim(); // EXロール
     characterDefaults[id] = { name: name, rarity: defaultRarity, type:type, role: role, exRole: exRole };
   });
 

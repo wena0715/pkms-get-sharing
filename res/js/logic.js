@@ -105,7 +105,7 @@ function generateUrl() {
     const exRole = 0;
     encodedCharacters += encodeCharacter(skilllevel, rarity, exRole);
   });
-  const EncodedStr = huffmanEncodeWithTree(encodedCharacters)
+  const EncodedStr = encodeURIComponent(huffmanEncodeWithTree(encodedCharacters));
   const baseUrl = window.location.origin + window.location.pathname;
   const query = `?data=${EncodedStr}`;
   const fullUrl = baseUrl + query;
@@ -122,7 +122,7 @@ async function displayCharacterInfoFromQuery() {
   const params = new URLSearchParams(window.location.search);
 
   const huffmanData = params.get('data');
-  const data = (huffmanData != null) ? huffmanDecodeWithTree(huffmanData) : null
+  const data = (huffmanData != null) ? huffmanDecodeWithTree(decodeURIComponent(huffmanData)) : null
 
   const formContainer = document.getElementById('character-forms');
 

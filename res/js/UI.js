@@ -2,7 +2,6 @@
 
 // バディーズをトグル（アクティブ/非アクティブを切り替え）
 function toggleBuddy(buddy) {
-    event.stopPropagation();
     buddy.classList.toggle("active");
 }
 
@@ -13,6 +12,7 @@ function toggleExRole(event,button){
 }
 
 function toggleSkillLevel(event,button){
+    event.stopPropagation();
     button.classList.toggle("active");
 }
 

@@ -13,21 +13,22 @@ const list_type={
   "いわ":"iwa","ゴースト":"ghost","ドラゴン":"dragon","あく":"aku","はがね":"hagane","フェアリー":"fairy"
 };
 
-// 48進数用の文字セット（0-9, a-z, A-K）
-// 技レベルで3ビット、星で2ビット、exロールフラグで1ビットの計6ビットだが、
-// 最大値は101111(2)で47なので48までの数値を確保
-const base48Chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKL';
+// 88進数用の文字セット（0-9, a-z, A-Z,記号）
+// フェス限の技レベルが10まで用意されるという情報が出ているので、技レベルで4ビット確保し、
+// 星で2ビット、exロールフラグで1ビットの計6ビットだが、
+// 最大値1010111(2)の88通り確保する
+const base48Chars = `0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&'()*+,-./:;<=>?@[\]^`;
 
-// ビットデータを48進数に変換する関数
+// ビットデータを88進数に変換する関数
 function encodeCharacter(skilllevel, rarity, exRole) {
-  const bitData = (parseInt(skilllevel) << 3) | (parseInt(rarity) << 1) | parseInt(exRole);
+  const bitData = (parseInt(skilllevel) << 4) | (parseInt(rarity) << 1) | parseInt(exRole);
   return base48Chars[bitData];
 }
 
-// 48進数の文字をデコードしてビットデータに戻す関数
+// 88進数の文字をデコードしてビットデータに戻す関数
 function decodeCharacter(characterCode) {
   const bitData = base48Chars.indexOf(characterCode);
-  const skilllevel = (bitData >> 3) & 0b111; // 上位3ビットで技レベル
+  const skilllevel = (bitData >> 4) & 0b1111; // 上位4ビットで技レベル
   const rarity = (bitData >> 1) & 0b11;     // 次の2ビットでレア度
   const exRole = bitData & 0b1;             // 最下位1ビットでEXロール
   return { skilllevel, rarity, exRole };

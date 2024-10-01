@@ -28,13 +28,9 @@ function buildHuffmanTree(freqMap) {
   }
 
   while (nodes.length > 1) {
-    // 頻度の昇順でソート
     nodes.sort((a, b) => a.freq - b.freq);
-
     const left = nodes.shift();
     const right = nodes.shift();
-
-    // 新しい内部ノードを作成して追加
     const newNode = new HuffmanNode(null, left.freq + right.freq, left, right);
     nodes.push(newNode);
   }
@@ -42,8 +38,9 @@ function buildHuffmanTree(freqMap) {
   return nodes[0];
 }
 
-// 各文字のビット列をマッピング
+// ハフマンツリーを走査してビット列を作成
 function buildHuffmanCodes(node, prefix = '', codeMap = {}) {
+  if (!node) return;
   if (node.char !== null) {
     codeMap[node.char] = prefix;
   } else {
@@ -55,38 +52,41 @@ function buildHuffmanCodes(node, prefix = '', codeMap = {}) {
 
 // ハフマンツリーをシリアライズ（ビット列化）
 function serializeTree(node) {
+  if (!node) return '';
   if (node.char !== null) {
     return `1${node.char.charCodeAt(0).toString(2).padStart(8, '0')}`; // 1 + 文字のバイナリ
   } else {
-    return `0${serializeTree(node.left)}${serializeTree(node.right)}`; // 0 + 左右の子を再帰的にシリアライズ
+    return `0${serializeTree(node.left)}${serializeTree(node.right)}`; // 0 + 子ノード再帰的にシリアライズ
   }
 }
 
-// シリアライズされたハフマンツリーをデシリアライズ（ツリーに復元）
+// シリアライズされたツリーをデシリアライズ
 function deserializeTree(serializedTree) {
   let index = 0;
 
   function deserialize() {
+    if (index >= serializedTree.length) return null;
     if (serializedTree[index] === '1') {
       index++;
       const charCode = parseInt(serializedTree.slice(index, index + 8), 2);
       index += 8;
       return new HuffmanNode(String.fromCharCode(charCode), 0);
-    } else {
+    } else if (serializedTree[index] === '0') {
       index++;
       const left = deserialize();
       const right = deserialize();
       return new HuffmanNode(null, 0, left, right);
     }
+    return null;
   }
 
   return deserialize();
 }
 
-// 64進数変換用の文字セット
-const base64Characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+// 64進数変換用の文字セット（URLセーフ）
+const base64Characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
 
-// ビット列を64進に変換
+// ビット列をURLセーフBase64に変換
 function toBase64(bitString) {
   let result = '';
   for (let i = 0; i < bitString.length; i += 6) {
@@ -97,7 +97,7 @@ function toBase64(bitString) {
   return result;
 }
 
-// 64進をビット列に変換
+// URLセーフBase64をビット列に変換
 function fromBase64(base64String) {
   let bitString = '';
   for (const char of base64String) {
@@ -107,73 +107,67 @@ function fromBase64(base64String) {
   return bitString;
 }
 
-// ビット列の長さを固定サイズで表現する
-function intToFixedLengthBinary(num, length = 32) {
-  return num.toString(2).padStart(length, '0'); // デフォルト32ビット（4バイト）
-}
-
-function fixedLengthBinaryToInt(binaryStr) {
-  return parseInt(binaryStr, 2);
-}
-
-// エンコード（ツリーも含む）
+// エンコード処理（ビット列の長さをエンコード文字列に含める）
 function huffmanEncodeWithTree(str) {
   const freqMap = buildFrequencyTable(str);
   const huffmanTree = buildHuffmanTree(freqMap);
   const huffmanCodes = buildHuffmanCodes(huffmanTree);
   const encodedStr = str.split('').map(char => huffmanCodes[char]).join('');
   const serializedTree = serializeTree(huffmanTree);
-  
-  const fullEncodedStr = serializedTree + encodedStr;
-  const originalBitLength = fullEncodedStr.length;
 
-  // ビット列の長さを32ビットの固定長バイナリにして追加
-  const lengthBinary = intToFixedLengthBinary(originalBitLength);
+  const fullEncodedStr = serializedTree + encodedStr;
+  const bitLength = fullEncodedStr.length;  // ビット列の長さを記録
+
+  // ビット列の長さを32ビットのバイナリとしてエンコード文字列に含める
+  const lengthBinary = bitLength.toString(2).padStart(32, '0');
   const fullEncodedStrWithLength = lengthBinary + fullEncodedStr;
 
   const base64Encoded = toBase64(fullEncodedStrWithLength);
-  
-  return base64Encoded;
+
+  return base64Encoded; // エンコード結果に長さ情報を含める
 }
 
-// 復号（ツリーも含む）
+// デコード処理（ビット列の長さを含んだエンコード文字列を処理）
 function huffmanDecodeWithTree(base64Encoded) {
   const fullEncodedStrWithLength = fromBase64(base64Encoded);
 
-  // 先頭の32ビットを長さとして取得
+  // 先頭32ビットはビット列の長さ
   const lengthBinary = fullEncodedStrWithLength.slice(0, 32);
-  const originalBitLength = fixedLengthBinaryToInt(lengthBinary);
+  const bitLength = parseInt(lengthBinary, 2);
 
   // 残りのビット列を取り出す
-  const fullEncodedStr = fullEncodedStrWithLength.slice(32, 32 + originalBitLength);
+  const fullEncodedStr = fullEncodedStrWithLength.slice(32, 32 + bitLength);
 
   const [serializedTree, encodedStr] = splitTreeAndData(fullEncodedStr);
   const huffmanTree = deserializeTree(serializedTree);
-  const decodedStr = huffmanDecode(encodedStr, buildHuffmanCodes(huffmanTree));
-  return decodedStr;
+  const huffmanCodes = buildHuffmanCodes(huffmanTree);
+
+  return huffmanDecode(encodedStr, huffmanCodes);
 }
 
 // ツリーとエンコードされた文字列を分離
 function splitTreeAndData(fullEncodedStr) {
   let index = 0;
-  
+
   function readTree() {
+    if (index >= fullEncodedStr.length) return;
     if (fullEncodedStr[index] === '1') {
-      index += 9; // 1 + 8ビット（文字のバイナリ）
-    } else {
+      index += 9; // 1 + 8ビット
+    } else if (fullEncodedStr[index] === '0') {
       index++;
-      readTree(); // 左の子を読む
-      readTree(); // 右の子を読む
+      readTree();
+      readTree();
     }
   }
 
-  readTree(); // ツリー全体を読み込む
+  readTree();
   const serializedTree = fullEncodedStr.slice(0, index);
   const encodedStr = fullEncodedStr.slice(index);
+
   return [serializedTree, encodedStr];
 }
 
-// 復号に使うビット列とハフマンツリーから、復号する
+// ビット列をデコード
 function huffmanDecode(encodedStr, huffmanCodes) {
   let decodedStr = '';
   let temp = '';

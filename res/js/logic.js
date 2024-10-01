@@ -81,8 +81,18 @@ function addCharacterForm(characterId, skilllevel, rarity, exRole) {
             <div>${characterName}</div>
           </div>
           <div>
-            <button class="skill-level" onclick="toggleSkillLevel(event,this)">技レベル</button>
-            <button class="ex-role" onclick="toggleExRole(event,this)">EXロール<img class="role" src="res/etc/role/${list_role[exrole]}_cake.png"></button>
+            <button class="skill-level" onclick="toggleSkillLevel(event,this)">
+              <div>
+                <img class="skilllevel" src="res/etc/skilllevel.png">
+                技レベル
+              </div>
+            </button>
+            <button class="ex-role" onclick="toggleExRole(event,this)">
+              <div>
+                EXロール
+                <img class="ex-role" src="res/etc/role/${list_role[exrole]}_cake.png">
+              </div>
+            </button>
           </div>
         </div>
   `;

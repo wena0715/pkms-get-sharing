@@ -11,6 +11,7 @@ function toggleExRole(event,button){
     button.classList.toggle("active");
 }
 
+// 技レベルを1-5で切り替える、5まで行ったら1に戻す
 function toggleSkillLevel(event,button){
     event.stopPropagation();
     button.classList.toggle("active");

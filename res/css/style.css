@@ -261,10 +261,21 @@ img.role{
 
 button.skill-level{
     background-color: #2AC78B;
+    display: flex;
 }
 button.ex-role{
     background-color:#ccc;
+    display: flex;
 }
 button.ex-role.active{
     background-color: #2AC78B;
+}
+img.ex-role{
+    height:1.5em;
+    width:auto;
+}
+
+img.skilllevel{
+    height:1.5em;
+    width:auto;
 }

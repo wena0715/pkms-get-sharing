@@ -106,16 +106,22 @@ function addCharacterForm(characterId, skilllevel, rarity, exRole) {
 function generateUrl() {
   let encodedCharacters = '';
   Object.keys(characterDefaults).forEach(characterId => {
-   let skilllevel;
-   if(document.getElementById(`has-character-${characterId}`).classList.contains('active')){
-      skilllevel = 1
+    const buddy = document.getElementById(`has-character-${characterId}`);
+    // バディーが有効でない場合、技レベルexロールともになし
+    let skilllevel = 0;
+    let exRole = 0;
+
+    // バディーが有効かどうかを確認する
+    if(buddy.classList.contains('active')){
+      //技レベルを取得
+      skilllevel = buddy.getElementsByClassName("num-lv")[0].textContent;
+      //exロールが有効かどうか取得
+      if(buddy.getElementsByClassName("ex-role-button")[0].classList.contains('active')){
+        exRole = 1;
+      }
     }
-    else{
-      skilllevel = 0
-    };
     //todo とりあえず仮置き
     const rarity = 2;
-    const exRole = 0;
     encodedCharacters += encodeCharacter(skilllevel, rarity, exRole);
   });
   const EncodedStr = encodeURIComponent(huffmanEncodeWithTree(encodedCharacters));

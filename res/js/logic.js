@@ -93,7 +93,6 @@ function addCharacterForm(characterId, skilllevel, rarity, exRole) {
             <button class="ex-role-button ${exRole>0 ? 'active':''}" onclick="toggleExRole(event,this)">
               <div class="ex-role">
                 <img class="ex-role" src="res/etc/role/${list_role[exroleType]}_cake.png">
-                <div class="ex-role-txt">EXロール</div>
               </div>
             </button>
           </div>

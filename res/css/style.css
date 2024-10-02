@@ -259,23 +259,63 @@ img.role{
     display:flex;
 }
 
-button.skill-level{
+button.skill-level-button{
+    visibility:hidden;
     background-color: #2AC78B;
-    display: flex;
+    height:100%;
 }
-button.ex-role{
+
+.buddy.active button.skill-level-button{
+    visibility:visible;
+}
+
+button.ex-role-button{
+    visibility:hidden;
     background-color:#ccc;
-    display: flex;
+    height:100%;
 }
-button.ex-role.active{
+
+.buddy.active button.ex-role-button{
+    visibility:visible;
+}
+
+.buddy.no-ex  button.ex-role-button{
+    visibility:hidden;
+}
+
+button.ex-role-button.active{
     background-color: #2AC78B;
 }
+
+div.ex-role{
+    display:flex;
+}
+div.skill-level{
+    display:flex;
+}
+
 img.ex-role{
-    height:1.5em;
+    height:1.2em;
     width:auto;
 }
 
-img.skilllevel{
-    height:1.5em;
+img.skill-level{
+    height:1.2em;
     width:auto;
+}
+
+.lv{
+    font-size:0.7em;
+}
+
+.ex-role-txt{
+    font-size:0.8em;
+}
+
+.num-lv{
+    font-size:1.1em;
+}
+
+.num-lv-max{
+    font-size:1.1em;
 }

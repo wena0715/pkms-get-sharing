@@ -71,26 +71,28 @@ function addCharacterForm(characterId, skilllevel, rarity, exRole) {
   const characterName = characterDefaults[characterId] ? characterDefaults[characterId].name : `キャラクター${characterId}`;
   const type = characterDefaults[characterId] ? characterDefaults[characterId].type : 'ノーマル';
   const role = characterDefaults[characterId] ? characterDefaults[characterId].role : 'アタッカー';
-  const exrole = characterDefaults[characterId] ? characterDefaults[characterId].exRole : '';
+  const exroleType = characterDefaults[characterId] ? characterDefaults[characterId].exRole : '';
 
   let div = document.createElement('div');
   div.innerHTML = `
-        <div id="has-character-${characterId}" class="buddy ${skilllevel>0 ? 'active':''} ${type}" onclick="toggleBuddy(this)">
+        <div id="has-character-${characterId}" class="buddy ${skilllevel>0 ? 'active':''} ${type} ${exroleType=='' ? 'no-ex' : ''}" onclick="toggleBuddy(this)">
           <div class="character-name">
             <div><img class="role" src="res/etc/role/${list_role[role]}.png"></div>
             <div>${characterName}</div>
           </div>
           <div>
-            <button class="skill-level" onclick="toggleSkillLevel(event,this)">
-              <div>
-                <img class="skilllevel" src="res/etc/skilllevel.png">
-                技レベル
+            <button class="skill-level-button" onclick="toggleSkillLevel(event,this)">
+              <div class="skill-level">
+                <img class="skill-level" src="res/etc/skilllevel.png">
+                <div class="lv">lv.</div>
+                <div class="num-lv">${skilllevel}</div>
+                <div class="num-lv-max">/5</div>
               </div>
             </button>
-            <button class="ex-role" onclick="toggleExRole(event,this)">
-              <div>
-                EXロール
-                <img class="ex-role" src="res/etc/role/${list_role[exrole]}_cake.png">
+            <button class="ex-role-button ${exRole>0 ? 'active':''}" onclick="toggleExRole(event,this)">
+              <div class="ex-role">
+                <img class="ex-role" src="res/etc/role/${list_role[exroleType]}_cake.png">
+                <div class="ex-role-txt">EXロール</div>
               </div>
             </button>
           </div>

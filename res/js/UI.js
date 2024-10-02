@@ -3,6 +3,10 @@
 // バディーズをトグル（アクティブ/非アクティブを切り替え）
 function toggleBuddy(buddy) {
     buddy.classList.toggle("active");
+    //技レベルが0(未所持)だった場合、1に変更する
+    if(buddy.getElementsByClassName("num-lv")[0].textContent == "0"){
+        buddy.getElementsByClassName("num-lv")[0].textContent = "1";
+    }
 }
 
 // EXロールボタンをトグル
@@ -14,7 +18,13 @@ function toggleExRole(event,button){
 // 技レベルを1-5で切り替える、5まで行ったら1に戻す
 function toggleSkillLevel(event,button){
     event.stopPropagation();
-    button.classList.toggle("active");
+    level = button.getElementsByClassName("num-lv")[0];
+    
+    if (level.textContent == "1" ){level.textContent = "2";}
+    else if (level.textContent == "2" ){level.textContent = "3";}
+    else if (level.textContent == "3" ){level.textContent = "4";}
+    else if (level.textContent == "4" ){level.textContent = "5";}
+    else if (level.textContent == "5" ){level.textContent = "1";}
 }
 
 // 昇順と降順を入れ替える

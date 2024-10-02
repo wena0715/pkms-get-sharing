@@ -68,7 +68,8 @@ function generateCharacterForms() {
 // キャラクターフォームを1つずつ生成する関数
 function addCharacterForm(characterId, skilllevel, rarity, exRole) {
 
-  const characterName = characterDefaults[characterId] ? characterDefaults[characterId].name : `キャラクター${characterId}`;
+  let characterName = characterDefaults[characterId] ? characterDefaults[characterId].name : `キャラクター＆${characterId}`;
+  characterName = "<span>" + characterName.split("＆")[0] + "</span><span>＆" + characterName.split("＆")[1] + "</span>";
   const type = characterDefaults[characterId] ? characterDefaults[characterId].type : 'ノーマル';
   const role = characterDefaults[characterId] ? characterDefaults[characterId].role : 'アタッカー';
   const exroleType = characterDefaults[characterId] ? characterDefaults[characterId].exRole : '';
@@ -80,7 +81,7 @@ function addCharacterForm(characterId, skilllevel, rarity, exRole) {
             <div><img class="role" src="res/etc/role/${list_role[role]}.png"></div>
             <div>${characterName}</div>
           </div>
-          <div>
+          <div class="buddy-detail">
             <button class="skill-level-button" onclick="toggleSkillLevel(event,this)">
               <div class="skill-level">
                 <img class="skill-level" src="res/etc/skillLevel.png">

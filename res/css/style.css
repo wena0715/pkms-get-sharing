@@ -250,6 +250,10 @@ button {
     justify-content: space-around;
 }
 
+.buddy-detail{
+    display:flex;
+}
+
 img.role{
     height:1em;
     width:auto;

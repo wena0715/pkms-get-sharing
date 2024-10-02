@@ -28,6 +28,11 @@ button {
     font-size: 16px;
     box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
+
+span{
+    display: inline-block;
+}
+
 .container {
     width: 100%;
     height: 100%;
@@ -67,7 +72,7 @@ button {
 
 /* バディーズの初期状態 (薄く表示) */
 .buddy {
-    padding: 20px;
+    padding: 10px;
     border-bottom: 1px solid #ccc;
     text-align: left;
     font-size: 18px;
@@ -252,6 +257,7 @@ button {
 
 .buddy-detail{
     display:flex;
+    flex-direction: column;
 }
 
 img.role{
@@ -267,6 +273,7 @@ button.skill-level-button{
     visibility:hidden;
     background-color: #2AC78B;
     height:100%;
+    margin:0.25em;
 }
 
 .buddy.active button.skill-level-button{
@@ -277,6 +284,7 @@ button.ex-role-button{
     visibility:hidden;
     background-color:#ccc;
     height:100%;
+    margin:0.25em;
 }
 
 .buddy.active button.ex-role-button{
@@ -293,13 +301,14 @@ button.ex-role-button.active{
 
 div.ex-role{
     display:flex;
+    justify-content: center;
 }
 div.skill-level{
     display:flex;
 }
 
 img.ex-role{
-    height:1.2em;
+    height:1.5em;
     width:auto;
 }
 
@@ -312,10 +321,14 @@ img.skill-level{
     font-size:0.7em;
 }
 
+.ex-role-txt{
+    font-size:0.8em;
+}
+
 .num-lv{
-    font-size:1.1em;
+    font-size:1.2em;
 }
 
 .num-lv-max{
-    font-size:1.1em;
+    font-size:1.2em;
 }

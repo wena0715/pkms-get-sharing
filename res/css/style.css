@@ -260,6 +260,10 @@ span{
     flex-direction: column;
 }
 
+.buddy-detail2{
+    display:flex;
+}
+
 img.role{
     height:1em;
     width:auto;

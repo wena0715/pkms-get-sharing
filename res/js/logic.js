@@ -82,19 +82,23 @@ function addCharacterForm(characterId, skilllevel, rarity, exRole) {
             <div>${characterName}</div>
           </div>
           <div class="buddy-detail">
-            <button class="skill-level-button" onclick="toggleSkillLevel(event,this)">
-              <div class="skill-level">
-                <img class="skill-level" src="res/etc/skillLevel.png">
-                <div class="lv">lv.</div>
-                <div class="num-lv">${skilllevel}</div>
-                <div class="num-lv-max">/5</div>
-              </div>
-            </button>
-            <button class="ex-role-button ${exRole>0 ? 'active':''}" onclick="toggleExRole(event,this)">
-              <div class="ex-role">
-                <img class="ex-role" src="res/etc/role/${list_role[exroleType]}_cake.png">
-              </div>
-            </button>
+            <div class="buddy-detail2">
+              <button class="ex-role-button ${exRole>0 ? 'active':''}" onclick="toggleExRole(event,this)">
+                <div class="ex-role">
+                  <img class="ex-role" src="res/etc/role/${list_role[exroleType]}_cake.png">
+                </div>
+              </button>
+            </div>
+            <div class="buddy-detail2">
+              <button class="skill-level-button" onclick="toggleSkillLevel(event,this)">
+                <div class="skill-level">
+                  <img class="skill-level" src="res/etc/skillLevel.png">
+                  <div class="lv">lv.</div>
+                  <div class="num-lv">${skilllevel}</div>
+                  <div class="num-lv-max">/5</div>
+                </div>
+              </button>
+            </div>
           </div>
         </div>
   `;

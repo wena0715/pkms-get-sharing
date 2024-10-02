@@ -83,7 +83,7 @@ function addCharacterForm(characterId, skilllevel, rarity, exRole) {
           <div>
             <button class="skill-level-button" onclick="toggleSkillLevel(event,this)">
               <div class="skill-level">
-                <img class="skill-level" src="res/etc/skilllevel.png">
+                <img class="skill-level" src="res/etc/skillLevel.png">
                 <div class="lv">lv.</div>
                 <div class="num-lv">${skilllevel}</div>
                 <div class="num-lv-max">/5</div>

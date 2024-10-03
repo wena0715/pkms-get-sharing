@@ -17,7 +17,7 @@ const list_type={
 // フェス限の技レベルが10まで用意されるという情報が出ているので、技レベルで4ビット確保し、
 // 星で2ビット、exロールフラグで1ビットの計6ビットだが、
 // 最大値1010111(2)の88通り確保する
-const base48Chars = `0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&'()*+,-./:;<=>?@[\]^`;
+const base48Chars = `0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&'()*+,-./:;<=>?@[\\]^`;
 
 // ビットデータを88進数に変換する関数
 function encodeCharacter(skilllevel, promotion, exRole) {
@@ -123,7 +123,7 @@ function generateUrl() {
     // バディーが有効でない場合、技レベルexロールともになし、星は初期値
     let skilllevel = 0;
     let exRole = 0;
-    let promotion = characterDefaults[characterId].promotion;
+    let promotion = characterDefaults[characterId].promotion - 3;
 
     // バディーが有効かどうかを確認する
     if(buddy.classList.contains('active')){
@@ -135,10 +135,10 @@ function generateUrl() {
       }
       //星を取得
       if(buddy.getElementsByClassName("num-promotion")[0].textContent = "6EX"){
-        promotion = 6;
+        promotion = 3;
       }
       else{
-        promotion = buddy.getElementsByClassName("num-promotion")[0].textContent;
+        promotion = parseInt(buddy.getElementsByClassName("num-promotion")[0].textContent) - 3;
       }
     }
     encodedCharacters += encodeCharacter(skilllevel, promotion, exRole);

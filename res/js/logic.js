@@ -104,7 +104,7 @@ function addCharacterForm(characterId, skilllevel, promotion, exRole) {
                   <img class="ex-role" src="res/etc/role/${list_role[exroleType]}_cake.png">
                 </div>
               </button>
-              <button style="visibility: hidden; font-size:1.2em;">
+              <button style="visibility: hidden; font-size:1.2em;height=100%;">
                 仮置き
               </button>
             </div>

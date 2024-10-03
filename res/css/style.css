@@ -257,11 +257,11 @@ span{
 
 .buddy-detail{
     display:flex;
-    flex-direction: column;
 }
 
 .buddy-detail2{
     display:flex;
+    flex-direction: column;
 }
 
 img.role{
@@ -281,6 +281,17 @@ button.skill-level-button{
 }
 
 .buddy.active button.skill-level-button{
+    visibility:visible;
+}
+
+button.promotion-button{
+    visibility:hidden;
+    background-color: #2AC78B;
+    height:100%;
+    margin:0.25em;
+}
+
+.buddy.active button.promotion-button{
     visibility:visible;
 }
 
@@ -310,6 +321,10 @@ div.ex-role{
 div.skill-level{
     display:flex;
 }
+div.promotion{
+    display:flex;
+    justify-content: center;
+}
 
 img.ex-role{
     height:1.5em;
@@ -317,6 +332,11 @@ img.ex-role{
 }
 
 img.skill-level{
+    height:1.2em;
+    width:auto;
+}
+
+img.promotion{
     height:1.2em;
     width:auto;
 }
@@ -334,5 +354,9 @@ img.skill-level{
 }
 
 .num-lv-max{
+    font-size:1.2em;
+}
+
+.num-promotion{
     font-size:1.2em;
 }

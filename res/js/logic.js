@@ -1,7 +1,7 @@
 
 //  各パラメータ：
 //  skilllevel：技レベル。0:未入手,1-5は技レベルを表す
-//  rarity:星。主人公でない限り3-5,EXしかないので、0:星3,1:星4,2:星5,3:EX済とする
+//  promotion:星。主人公でない限り3-5,EXしかないので、0:星3,1:星4,2:星5,3:EX済とする
 //  exRole:EXロール開放済みかどうか。0なら未開放、1なら開放済み
 
 let characterDefaults = {}; // CSVデータを格納する変数
@@ -20,8 +20,8 @@ const list_type={
 const base48Chars = `0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!"#$%&'()*+,-./:;<=>?@[\]^`;
 
 // ビットデータを88進数に変換する関数
-function encodeCharacter(skilllevel, rarity, exRole) {
-  const bitData = (parseInt(skilllevel) << 4) | (parseInt(rarity) << 1) | parseInt(exRole);
+function encodeCharacter(skilllevel, promotion, exRole) {
+  const bitData = (parseInt(skilllevel) << 4) | (parseInt(promotion) << 1) | parseInt(exRole);
   return base48Chars[bitData];
 }
 
@@ -29,9 +29,9 @@ function encodeCharacter(skilllevel, rarity, exRole) {
 function decodeCharacter(characterCode) {
   const bitData = base48Chars.indexOf(characterCode);
   const skilllevel = (bitData >> 4) & 0b1111; // 上位4ビットで技レベル
-  const rarity = (bitData >> 1) & 0b11;     // 次の2ビットでレア度
+  const promotion = (bitData >> 1) & 0b11;     // 次の2ビットでレア度
   const exRole = bitData & 0b1;             // 最下位1ビットでEXロール
-  return { skilllevel, rarity, exRole };
+  return { skilllevel, promotion, exRole };
 }
 
 // CSVファイルの読み込み
@@ -44,11 +44,11 @@ async function loadCharacterDefaults() {
     const cols = row.split(',');
     const id = parseInt(cols[0].trim()); // CSVファイルの行番号をIDとして扱う
     const name = cols[1].trim(); // キャラクター名
-    const defaultRarity = parseInt(cols[2].trim()); // レア度（星）
+    const defaultPromotion = parseInt(cols[2].trim()); // レア度（星）
     const type = cols[3].trim();
     const role = cols[4].trim();
     const exRole = cols[5].trim(); // EXロール
-    characterDefaults[id] = { name: name, rarity: defaultRarity, type:type, role: role, exRole: exRole };
+    characterDefaults[id] = { name: name, promotion: defaultPromotion, type:type, role: role, exRole: exRole };
   });
 
   generateCharacterForms(); // CSVデータの数に基づいてフォームを生成
@@ -60,13 +60,13 @@ function generateCharacterForms() {
   formContainer.innerHTML = ''; // フォームをリセット
 
   Object.keys(characterDefaults).forEach(characterId => {
-    const { name, rarity, exRole } = characterDefaults[characterId];
-    addCharacterForm(characterId, 0, rarity, 0); // 初期値でフォームを生成
+    const { name, promotion, exRole } = characterDefaults[characterId];
+    addCharacterForm(characterId, 0, promotion, 0); // 初期値でフォームを生成
   });
 }
 
 // キャラクターフォームを1つずつ生成する関数
-function addCharacterForm(characterId, skilllevel, rarity, exRole) {
+function addCharacterForm(characterId, skilllevel, promotion, exRole) {
 
   let characterName = characterDefaults[characterId] ? characterDefaults[characterId].name : `キャラクター＆${characterId}`;
   characterName = "<span>" + characterName.split("＆")[0] + "</span><span>＆" + characterName.split("＆")[1] + "</span>";
@@ -83,13 +83,12 @@ function addCharacterForm(characterId, skilllevel, rarity, exRole) {
           </div>
           <div class="buddy-detail">
             <div class="buddy-detail2">
-              <button class="ex-role-button ${exRole>0 ? 'active':''}" onclick="toggleExRole(event,this)">
-                <div class="ex-role">
-                  <img class="ex-role" src="res/etc/role/${list_role[exroleType]}_cake.png">
+              <button class="promotion-button" onclick="togglePromotion(event,this)">
+                <div class="promotion">
+                  <img class="promotion" src="res/etc/promotion.png">
+                  <div class="num-promotion">${promotion==6 ? "6EX" : promotion}</div>
                 </div>
               </button>
-            </div>
-            <div class="buddy-detail2">
               <button class="skill-level-button" onclick="toggleSkillLevel(event,this)">
                 <div class="skill-level">
                   <img class="skill-level" src="res/etc/skillLevel.png">
@@ -97,6 +96,16 @@ function addCharacterForm(characterId, skilllevel, rarity, exRole) {
                   <div class="num-lv">${skilllevel}</div>
                   <div class="num-lv-max">/5</div>
                 </div>
+              </button>
+            </div>
+            <div class="buddy-detail2">
+              <button class="ex-role-button ${exRole>0 ? 'active':''}" onclick="toggleExRole(event,this)">
+                <div class="ex-role">
+                  <img class="ex-role" src="res/etc/role/${list_role[exroleType]}_cake.png">
+                </div>
+              </button>
+              <button style="visibility: hidden; font-size:1.2em;">
+                仮置き
               </button>
             </div>
           </div>
@@ -111,9 +120,10 @@ function generateUrl() {
   let encodedCharacters = '';
   Object.keys(characterDefaults).forEach(characterId => {
     const buddy = document.getElementById(`has-character-${characterId}`);
-    // バディーが有効でない場合、技レベルexロールともになし
+    // バディーが有効でない場合、技レベルexロールともになし、星は初期値
     let skilllevel = 0;
     let exRole = 0;
+    let promotion = characterDefaults[characterId].promotion;
 
     // バディーが有効かどうかを確認する
     if(buddy.classList.contains('active')){
@@ -123,10 +133,15 @@ function generateUrl() {
       if(buddy.getElementsByClassName("ex-role-button")[0].classList.contains('active')){
         exRole = 1;
       }
+      //星を取得
+      if(buddy.getElementsByClassName("num-promotion")[0].textContent = "6EX"){
+        promotion = 6;
+      }
+      else{
+        promotion = buddy.getElementsByClassName("num-promotion")[0].textContent;
+      }
     }
-    //todo とりあえず仮置き
-    const rarity = 2;
-    encodedCharacters += encodeCharacter(skilllevel, rarity, exRole);
+    encodedCharacters += encodeCharacter(skilllevel, promotion, exRole);
   });
   const EncodedStr = encodeURIComponent(huffmanEncodeWithTree(encodedCharacters));
   const baseUrl = window.location.origin + window.location.pathname;
@@ -154,8 +169,8 @@ async function displayCharacterInfoFromQuery() {
   // フォームをリセットしてから表示（既存のデフォルトフォームを消去）
     formContainer.innerHTML = '';
     data.split('').forEach((characterCode, index) => {
-      const { skilllevel, rarity, exRole } = decodeCharacter(characterCode);
-      addCharacterForm(index + 1, skilllevel, rarity + 3, exRole);
+      const { skilllevel, promotion, exRole } = decodeCharacter(characterCode);
+      addCharacterForm(index + 1, skilllevel, promotion + 3, exRole);
     });
   }
 }

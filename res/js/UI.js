@@ -27,6 +27,18 @@ function toggleSkillLevel(event,button){
     else if (level.textContent == "5" ){level.textContent = "1";}
 }
 
+// ☆状況を変更する
+// 最低☆から6EXまで切り替える、6EXまで行ったら最低☆に戻す
+function togglePromotion(event,button){
+    event.stopPropagation();
+    promotion = button.getElementsByClassName("num-promotion")[0];
+    characterId = button.closest(".buddy").id.split("-")[2];
+    if (promotion.textContent == "3" ){promotion.textContent = "4";}
+    else if (promotion.textContent == "4" ){promotion.textContent = "5";}
+    else if (promotion.textContent == "5" ){promotion.textContent = "6EX";}
+    else if (promotion.textContent == "6EX" ){promotion.textContent = characterDefaults[characterId].promotion;}
+}
+
 // 昇順と降順を入れ替える
 function changeOrderAsc(button) {
     let characters = Array.from(document.getElementById('character-forms').children);
